@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head><title>Chatbot</title></head>
+<body>
+  <h1>AI PMC Có Thể Giúp Gì Cho Bạn?</h1>
+  <input id="userInput" placeholder="Nhập câu hỏi..." />
+  <button onclick="sendMessage()">Gửi</button>
+  <div id="chatbox"></div>
+
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById('userInput').value;
+      const chatbox = document.getElementById('chatbox');
+      chatbox.innerHTML += '<p><strong>Bạn:</strong> ' + userInput + '</p>';
+
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userInput })
+      });
+
+      const data = await response.json();
+      chatbox.innerHTML += '<p><strong>GPT:</strong> ' + data.message + '</p>';
+    }
+  </script>
+</body>
+</html>
