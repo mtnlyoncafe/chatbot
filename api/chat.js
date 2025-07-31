@@ -1,12 +1,17 @@
 export default function handler(req, res) {
-  if (req.method === "POST") {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  if (req.method === 'POST') {
     const { message } = req.body;
-    if (!message) {
-      return res.status(400).json({ reply: "Thiếu nội dung tin nhắn." });
-    }
-    // Trả lời mặc định (có thể thay bằng AI sau)
-    return res.status(200).json({ reply: `Bạn vừa nói: "${message}". Tôi đang xử lý yêu cầu.` });
+    res.status(200).json({ reply: `Xin chào! Tôi đã nhận được: "${message}"` });
   } else {
-    return res.status(405).json({ reply: "Chỉ hỗ trợ POST" });
+    res.status(405).json({ error: 'Phương thức không được hỗ trợ' });
   }
 }
