@@ -1,17 +1,24 @@
-<script>
-  async function sendMessage() {
-    const input = document.getElementById("userInput").value;
-    const chatbox = document.getElementById("chatbox");
-    chatbox.innerHTML += `<div><b>Bạn:</b> ${input}</div>`;
+  <h2>AI PMC Có Thể Giúp Gì Cho Bạn?</h2>
+  <p>Chào bạn! Hãy nhập câu hỏi về Quản Lý Dự Án của bạn bên dưới 👇</p>
+  <input id="input" type="text" placeholder="Bạn: ..." />
+  <button onclick="sendMessage()">Gửi</button>
+  <p id="response"></p>
 
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input })
-    });
-
-    const data = await res.json();
-    chatbox.innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
-    document.getElementById("userInput").value = "";
-  }
-</script>
+  <script>
+    async function sendMessage() {
+      const userMessage = document.getElementById('input').value;
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+        const data = await res.json();
+        document.getElementById('response').innerText = data.reply || data.error;
+      } catch (err) {
+        document.getElementById('response').innerText = 'Lỗi: Không thể kết nối máy chủ.';
+      }
+    }
+  </script>
