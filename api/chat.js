@@ -16,8 +16,6 @@ export default async function handler(req, res) {
         model: 'gpt-4o',
         messages: [{ role: 'user', content: message }]
       })
-      temperature: 0.5,
-    max_tokens: 600
     });
 
     const data = await openaiRes.json();
