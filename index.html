@@ -1,26 +1,32 @@
 <!DOCTYPE html>
-<html>
-<head><title>Chatbot</title></head>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>AI PMC Chatbot</title>
+</head>
 <body>
-  <h1>AI PMC Có Thể Giúp Gì Cho Bạn?</h1>
-  <input id="userInput" placeholder="Nhập câu hỏi..." />
+  <h2>AI PMC Có Thể Giúp Gì Cho Bạn?</h2>
+  <p>Chào bạn! Hãy nhập câu hỏi về Quản Lý Dự Án của bạn bên dưới 👇</p>
+  <input id="input" type="text" placeholder="Bạn: ..." />
   <button onclick="sendMessage()">Gửi</button>
-  <div id="chatbox"></div>
+  <p id="response"></p>
 
   <script>
     async function sendMessage() {
-      const userInput = document.getElementById('userInput').value;
-      const chatbox = document.getElementById('chatbox');
-      chatbox.innerHTML += '<p><strong>Bạn:</strong> ' + userInput + '</p>';
-
-      const response = await fetch('/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userInput })
-      });
-
-      const data = await response.json();
-      chatbox.innerHTML += '<p><strong>GPT:</strong> ' + data.message + '</p>';
+      const userMessage = document.getElementById('input').value;
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+        const data = await res.json();
+        document.getElementById('response').innerText = data.reply || data.error;
+      } catch (err) {
+        document.getElementById('response').innerText = 'Lỗi: Không thể kết nối máy chủ.';
+      }
     }
   </script>
 </body>
