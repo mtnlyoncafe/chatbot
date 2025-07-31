@@ -1,26 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Chatbot PMC</title>
-</head>
-<body>
-  <h2>AI PMC Có Thể Giúp Gì Cho Bạn?</h2>
-  <input id="message" placeholder="Gõ câu hỏi..." />
-  <button onclick="send()">Gửi</button>
-  <p id="response"></p>
+<script>
+  async function sendMessage() {
+    const input = document.getElementById("userInput").value;
+    const chatbox = document.getElementById("chatbox");
+    chatbox.innerHTML += `<div><b>Bạn:</b> ${input}</div>`;
 
-  <script>
-    async function send() {
-      const msg = document.getElementById("message").value;
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg }),
-      });
-      const data = await res.json();
-      document.getElementById("response").innerText = data.reply;
-    }
-  </script>
-</body>
-</html>
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: input })
+    });
+
+    const data = await res.json();
+    chatbox.innerHTML += `<div><b>Bot:</b> ${data.reply}</div>`;
+    document.getElementById("userInput").value = "";
+  }
+</script>
