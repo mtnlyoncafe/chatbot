@@ -1,19 +1,20 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ reply: 'Chỉ hỗ trợ phương thức POST.' });
+    return res.status(405).json({ reply: 'Only POST method allowed' });
   }
 
   const userMessage = req.body.message;
+
   if (!userMessage || typeof userMessage !== 'string') {
-    return res.status(400).json({ reply: 'Tin nhắn không hợp lệ.' });
+    return res.status(400).json({ reply: 'Invalid message format' });
   }
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
@@ -22,11 +23,11 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || 'Không có phản hồi.';
+    const reply = data.choices?.[0]?.message?.content || 'No response from model.';
     res.status(200).json({ reply });
 
   } catch (error) {
-    console.error('Lỗi server:', error);
-    res.status(500).json({ reply: 'Lỗi máy chủ.' });
+    console.error('OpenAI API error:', error);
+    res.status(500).json({ reply: 'Server error' });
   }
 }
