@@ -1,11 +1,7 @@
+
 {
-  "name": "chatbot-vercel",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "dev": "vercel dev"
-  },
+  "type": "module",
   "dependencies": {
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.1"
   }
 }
