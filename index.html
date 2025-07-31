@@ -63,6 +63,16 @@
       font-weight: bold;
       color: #c00;
     }
+    #response {
+  background: #eef4ff;
+  padding: 15px;
+  margin-top: 20px;
+  border-left: 4px solid #003399;
+  border-radius: 6px;
+  max-height: 400px;         /* ⚡ Giới hạn chiều cao */
+  overflow-y: auto;          /* ⚡ Bật cuộn nếu vượt quá */
+}
+
   </style>
 </head>
 <body>
@@ -85,45 +95,47 @@
    
   </div>
 
-  <script>
-    document.getElementById('chat-form').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const messageInput = document.getElementById('message');
-  const message = messageInput.value.trim();
-  const responseDiv = document.getElementById('response');
+ <script>
+  document.getElementById('chat-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value.trim();
+    const responseDiv = document.getElementById('response');
 
-  if (!message) return;
+    if (!message) return;
 
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ message })
-    });
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message })
+      });
 
-    const data = await res.json();
-    const formatted = data.reply
-      .replace(/\n/g, '<br>')
-      .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>');
+      const data = await res.json();
+      const formatted = data.reply
+        .replace(/\n/g, '<br>')
+        .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>');
 
-   responseDiv.innerHTML += `
-  <div style="margin-top: 20px;">
-    <p><strong>👤 Bạn:</strong> ${message}</p>
-    <p><strong>🤖 AI:</strong> ${formatted}</p>
-  </div>
-`;
-    // Xóa nội dung sau khi gửi
-    messageInput.value = '';
+      responseDiv.innerHTML += `
+        <div style="margin-top: 20px;">
+          <p><strong>👤 Bạn:</strong> ${message}</p>
+          <p><strong>🤖 AI:</strong> ${formatted}</p>
+        </div>
+      `;
 
-  } catch (err) {
-    responseDiv.innerHTML = `
-      <h4><strong>Phản hồi từ AI:</strong></h4>
-      <p class="important">Lỗi: Không thể kết nối máy chủ.</p>`;
-  }
-});
+      messageInput.value = '';
+      responseDiv.scrollTop = responseDiv.scrollHeight; // ✅ tự cuộn xuống
 
-  </script>
+    } catch (err) {
+      responseDiv.innerHTML += `
+        <div style="color: red; margin-top: 20px;">
+          <strong>Lỗi:</strong> Không thể kết nối máy chủ.
+        </div>`;
+    }
+  });
+</script>
+
 </body>
 </html>
