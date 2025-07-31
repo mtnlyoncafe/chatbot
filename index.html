@@ -6,44 +6,82 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 800px;
-      margin: 50px auto;
+      max-width: 860px;
+      margin: 40px auto;
       padding: 20px;
+      background-color: #f7f9fb;
     }
-    #response {
-      background: #f0f4ff;
+    h1, h2, h3, h4 {
+      color: #003399;
+      margin-bottom: 10px;
+    }
+    h1 { font-size: 28px; }
+    h2 { font-size: 24px; }
+    h3 { font-size: 20px; }
+    h4 { font-size: 18px; }
+
+    .info-box {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .chat-box {
+      background: #eef4ff;
       padding: 15px;
       margin-top: 20px;
       border-left: 4px solid #003399;
       border-radius: 6px;
     }
+
     input, button {
       padding: 10px;
       font-size: 16px;
     }
+
     input {
       width: 70%;
       margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
+
     button {
       background-color: #003399;
       color: white;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #002266;
+    }
+
+    .important {
+      font-weight: bold;
+      color: #c00;
     }
   </style>
 </head>
 <body>
-  <h1>AI PMC Có Thể Giúp Gì Cho Bạn?</h1>
-  <p>Chào bạn! Hãy nhập câu hỏi về Quản Lý Dự Án của bạn bên dưới 👇</p>
-  <form id="chat-form">
-    <input type="text" id="message" placeholder="Nhập tin nhắn..." required />
-    <button type="submit">Gửi</button>
-  </form>
-  <div id="response"></div>
+  <div class="info-box">
+    <h1>AI PMC Có Thể Giúp Gì Cho Bạn?</h1>
+    <h2>💬 Hỗ trợ về Quản Lý Dự Án Xây Dựng</h2>
+    <p>Chào bạn! Hãy nhập câu hỏi của bạn vào ô bên dưới và nhấn <strong>Gửi</strong> để nhận phản hồi từ AI PMC.</p>
+
+    <form id="chat-form">
+      <h3>📨 Gửi câu hỏi của bạn</h3>
+      <input type="text" id="message" placeholder="Nhập câu hỏi..." required />
+      <button type="submit">Gửi</button>
+    </form>
+
+    <div id="response" class="chat-box">
+      <h4>🧠 <strong>Phản hồi từ AI:</strong></h4>
+      <p><em>Chưa có phản hồi.</em></p>
+    </div>
+  </div>
 
   <script>
     document.getElementById('chat-form').addEventListener('submit', async function (e) {
@@ -61,10 +99,18 @@
         });
 
         const data = await res.json();
-        const formatted = data.reply.replace(/\n/g, '<br>');
-        responseDiv.innerHTML = '🤖 <strong>AI:</strong><br>' + formatted;
+        const formatted = data.reply
+          .replace(/\n/g, '<br>')
+          .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>'); // nếu cần tô đậm bằng cú pháp **text**
+
+        responseDiv.innerHTML = `
+          <h4>🧠 <strong>Phản hồi từ AI:</strong></h4>
+          <p>${formatted}</p>
+        `;
       } catch (err) {
-        responseDiv.innerHTML = '<span style="color:red;">Lỗi: Không thể kết nối máy chủ.</span>';
+        responseDiv.innerHTML = `
+          <h4>🧠 <strong>Phản hồi từ AI:</strong></h4>
+          <p class="important">Lỗi: Không thể kết nối máy chủ.</p>`;
       }
     });
   </script>
