@@ -9,13 +9,14 @@ export default async function handler(req, res) {
     const completion = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: userMessage }]
+        model: "gpt-4o", // dùng model nhanh hơn
+        messages: [{ role: "user", content: message }],
+        temperature: 0.5,
+        max_tokens: 600
       })
     });
 
