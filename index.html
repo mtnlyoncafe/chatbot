@@ -1,18 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
   <title>AI PMC - Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    #response {
+      background: #f0f4ff;
+      padding: 15px;
+      margin-top: 20px;
+      border-left: 4px solid #003399;
+      border-radius: 6px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+    input {
+      width: 70%;
+      margin-right: 10px;
+    }
+    button {
+      background-color: #003399;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #002266;
+    }
+  </style>
 </head>
 <body>
   <h1>AI PMC Có Thể Giúp Gì Cho Bạn?</h1>
   <p>Chào bạn! Hãy nhập câu hỏi về Quản Lý Dự Án của bạn bên dưới 👇</p>
   <form id="chat-form">
-    <input type="text" id="message" placeholder="Nhập tin nhắn..." />
+    <input type="text" id="message" placeholder="Nhập tin nhắn..." required />
     <button type="submit">Gửi</button>
   </form>
-  <p id="response"></p>
+  <div id="response"></div>
 
   <script>
     document.getElementById('chat-form').addEventListener('submit', async function (e) {
@@ -30,9 +61,10 @@
         });
 
         const data = await res.json();
-        responseDiv.innerHTML = '🤖: ' + data.reply;
+        const formatted = data.reply.replace(/\n/g, '<br>');
+        responseDiv.innerHTML = '🤖 <strong>AI:</strong><br>' + formatted;
       } catch (err) {
-        responseDiv.innerHTML = 'Lỗi: Không thể kết nối máy chủ.';
+        responseDiv.innerHTML = '<span style="color:red;">Lỗi: Không thể kết nối máy chủ.</span>';
       }
     });
   </script>
