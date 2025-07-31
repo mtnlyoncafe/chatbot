@@ -1,31 +1,32 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Chỉ hỗ trợ POST request' });
+    return res.status(405).json({ reply: 'Chỉ hỗ trợ phương thức POST.' });
   }
 
-  const { message } = req.body;
+  const userMessage = req.body.message;
+  if (!userMessage || typeof userMessage !== 'string') {
+    return res.status(400).json({ reply: 'Tin nhắn không hợp lệ.' });
+  }
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'system', content: 'Bạn là trợ lý chatbot thân thiện.' },
-          { role: 'user', content: message },
-        ],
-      }),
+        messages: [{ role: 'user', content: userMessage }]
+      })
     });
 
     const data = await response.json();
-    res.status(200).json({ reply: data.choices[0].message.content });
+    const reply = data.choices?.[0]?.message?.content || 'Không có phản hồi.';
+    res.status(200).json({ reply });
 
-  } catch (err) {
-    console.error('Lỗi gọi OpenAI:', err);
-    res.status(500).json({ message: 'Lỗi server' });
+  } catch (error) {
+    console.error('Lỗi server:', error);
+    res.status(500).json({ reply: 'Lỗi máy chủ.' });
   }
 }
