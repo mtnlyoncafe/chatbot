@@ -106,11 +106,12 @@
       .replace(/\n/g, '<br>')
       .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>');
 
-    responseDiv.innerHTML = `
-      <h4><strong>Phản hồi từ AI:</strong></h4>
-      <p>${formatted}</p>
-    `;
-
+   responseDiv.innerHTML += `
+  <div style="margin-top: 20px;">
+    <p><strong>👤 Bạn:</strong> ${message}</p>
+    <p><strong>🤖 AI:</strong> ${formatted}</p>
+  </div>
+`;
     // Xóa nội dung sau khi gửi
     messageInput.value = '';
 
