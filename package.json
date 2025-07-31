@@ -1,7 +1,8 @@
-
 {
-  "type": "module",
-  "dependencies": {
-    "node-fetch": "^2.6.1"
-  }
+  "name": "pmc-chatbot-api",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vercel dev"
+  },
+  "dependencies": {}
 }

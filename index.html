@@ -1,32 +1,26 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AI PMC Chatbot</title>
+  <title>Chatbot PMC</title>
 </head>
 <body>
   <h2>AI PMC Có Thể Giúp Gì Cho Bạn?</h2>
-  <p>Chào bạn! Hãy nhập câu hỏi về Quản Lý Dự Án của bạn bên dưới 👇</p>
-  <input type="text" id="message" placeholder="Nhập tin nhắn..." />
-  <button onclick="sendMessage()">Gửi</button>
+  <input id="message" placeholder="Gõ câu hỏi..." />
+  <button onclick="send()">Gửi</button>
   <p id="response"></p>
-<script>
-  async function sendMessage() {
-    const message = document.getElementById("message").value;
-    const responseElement = document.getElementById("response");
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message })
+
+  <script>
+    async function send() {
+      const msg = document.getElementById("message").value;
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg }),
       });
       const data = await res.json();
-      responseElement.innerText = '🤖 ' + data.reply;
-    } catch (error) {
-      responseElement.innerText = 'Lỗi: Không thể kết nối máy chủ.';
+      document.getElementById("response").innerText = data.reply;
     }
-  }
-</script>
+  </script>
 </body>
 </html>
