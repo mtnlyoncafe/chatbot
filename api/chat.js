@@ -6,15 +6,20 @@ export default async function handler(req, res) {
   }
 
   try {
-     const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const completion = await fetch('https://api.openai.com/v1/chat/completions', {
+    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json'
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: userMessage }]
         model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: userMessage }]
+        messages: [{ role: 'user', content: message }]
       })
     });
 
