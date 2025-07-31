@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { message } = req.body;
     res.status(200).json({
-      reply: `AI PMC trả lời: Bạn vừa hỏi "${message}"`
+      reply: `AI PMC trả lời: Bạn vừa hỏi: "${message}"`
     });
   } else {
     res.status(405).json({ message: "Chỉ hỗ trợ POST" });
