@@ -78,41 +78,49 @@
     </form>
 
     <div id="response" class="chat-box">
-      <h4>🧠 <strong>Phản hồi từ AI:</strong></h4>
+      <h4><strong>Phản hồi từ AI:</strong></h4>
       <p><em>Chưa có phản hồi.</em></p>
     </div>
   </div>
 
   <script>
     document.getElementById('chat-form').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const message = document.getElementById('message').value;
-      const responseDiv = document.getElementById('response');
+  e.preventDefault();
+  const messageInput = document.getElementById('message');
+  const message = messageInput.value.trim();
+  const responseDiv = document.getElementById('response');
 
-      try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ message })
-        });
+  if (!message) return;
 
-        const data = await res.json();
-        const formatted = data.reply
-          .replace(/\n/g, '<br>')
-          .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>'); // nếu cần tô đậm bằng cú pháp **text**
-
-        responseDiv.innerHTML = `
-          <h4>🧠 <strong>Phản hồi từ AI:</strong></h4>
-          <p>${formatted}</p>
-        `;
-      } catch (err) {
-        responseDiv.innerHTML = `
-          <h4>🧠 <strong>Phản hồi từ AI:</strong></h4>
-          <p class="important">Lỗi: Không thể kết nối máy chủ.</p>`;
-      }
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
     });
+
+    const data = await res.json();
+    const formatted = data.reply
+      .replace(/\n/g, '<br>')
+      .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>');
+
+    responseDiv.innerHTML = `
+      <h4><strong>Phản hồi từ AI:</strong></h4>
+      <p>${formatted}</p>
+    `;
+
+    // Xóa nội dung sau khi gửi
+    messageInput.value = '';
+
+  } catch (err) {
+    responseDiv.innerHTML = `
+      <h4><strong>Phản hồi từ AI:</strong></h4>
+      <p class="important">Lỗi: Không thể kết nối máy chủ.</p>`;
+  }
+});
+
   </script>
 </body>
 </html>
