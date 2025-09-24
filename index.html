@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <title>AI PMC - Chatbot</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-hight: 22px;
-    }
+    body { font-family: Arial, sans-serif; line-height: 22px; }
+.chat-box { background:#eef4ff; padding:5px; border-left:4px solid #003399;
+            border-radius:6px; min-height:200px; }
+
     .info-box {
       background: #ffffff;
       padding: 5px;
@@ -78,45 +78,59 @@
   </div>
 
  <script>
-  document.getElementById('chat-form').addEventListener('submit', async function (e) {
+  <script>
+  function getReply(data){
+    // Hỗ trợ nhiều dạng phản hồi khác nhau
+    return (
+      data?.reply ??
+      data?.message ??
+      data?.content ??
+      data?.choices?.[0]?.message?.content ??
+      ''
+    );
+  }
+
+  document.getElementById('chat-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const messageInput = document.getElementById('message');
-    const message = messageInput.value.trim();
-    const responseDiv = document.getElementById('response');
+    const input = document.getElementById('message');
+    const msg = input.value.trim();
+    const box = document.getElementById('response');
+    if(!msg) return;
 
-    if (!message) return;
-
-    try {
+    try{
       const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message })
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ message: msg })
       });
 
-      const data = await res.json();
-      const formatted = data.reply
-        .replace(/\n/g, '<br>')
-        .replace(/(?:\*\*)(.*?)\*\*/g, '<strong>$1</strong>');
+      const data = await res.json().catch(()=> ({}));
+      let reply = getReply(data);
 
-      responseDiv.innerHTML += `
-        <div style="margin-top: 20px;">
-          <p><strong>👤 Bạn:</strong> ${message}</p>
+      if(!reply) reply = 'Không có phản hồi từ máy chủ.'; // fallback
+
+      const formatted = reply
+        .toString()
+        .replace(/\n/g,'<br>')
+        .replace(/(?:\*\*)(.*?)\*\*/g,'<strong>$1</strong>');
+
+      box.innerHTML += `
+        <div style="margin-top:16px">
+          <p><strong>👤 Bạn:</strong> ${msg}</p>
           <p><strong>🤖 AI:</strong> ${formatted}</p>
-        </div>
-      `;
-
-      messageInput.value = '';
-      responseDiv.scrollTop = responseDiv.scrollHeight; // ✅ tự cuộn xuống
-
-    } catch (err) {
-      responseDiv.innerHTML += `
-        <div style="color: red; margin-top: 20px;">
+        </div>`;
+      input.value = '';
+      box.scrollTop = box.scrollHeight;
+    }catch(err){
+      box.innerHTML += `
+        <div style="color:#c00;margin-top:16px">
           <strong>Lỗi:</strong> Không thể kết nối máy chủ.
         </div>`;
+      console.error(err);
     }
   });
+</script>
+
 </script>
 
 </body>
